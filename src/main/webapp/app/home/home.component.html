@@ -2,21 +2,21 @@
     <div class="col-md-12">
         <h1 class="display-8">欢迎来到九章全栈课程</h1>
 
-        <!--<div [ngSwitch]="isAuthenticated()">-->
-            <!--<div class="alert alert-success" *ngSwitchCase="true">-->
-                <!--<span *ngIf="account"-->
-                   <!--&gt; You are logged in as user "{{account.login}}". </span>-->
-            <!--</div>-->
+        <div [ngSwitch]="isAuthenticated()">
+            <div class="alert alert-success" *ngSwitchCase="true">
+                <span *ngIf="account"
+                   > You are logged in as user "{{account.login}}". </span>
+            </div>
 
-            <!--<div class="alert alert-warning" *ngSwitchCase="false">-->
-                <!--<span>If you want to </span>-->
-                <!--<a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>-->
-            <!--</div>-->
-            <!--<div class="alert alert-warning" *ngSwitchCase="false">-->
-                <!--<span>You don't have an account yet?</span>&nbsp;-->
-                <!--<a class="alert-link" routerLink="register">Register a new account</a>-->
-            <!--</div>-->
-        <!--</div>-->
+            <div class="alert alert-warning" *ngSwitchCase="false">
+                <span>If you want to </span>
+                <a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
+            </div>
+            <div class="alert alert-warning" *ngSwitchCase="false">
+                <span>You don't have an account yet?</span>&nbsp;
+                <a class="alert-link" routerLink="register">Register a new account</a>
+            </div>
+        </div>
         <!--<div>-->
             <!--<div>Course_Name</div>-->
             <!--<div>Course_Location</div>-->
@@ -33,9 +33,9 @@
                     <div style="padding-left: 5px">{{course.courseName}}</div>
                     <div>{{course.courseLocation}}</div>
                     <div>{{course.courseContent}}</div>
-                    <div>{{course.teacherId}}</div>
-                    <button (click)="addCourseToStudent()">注册课程</button>
-                    <button>删除课程</button>
+                    <div>{{course.courseTeacher}}</div>
+                    <button (click)="registerCourse(course.courseName)">注册课程</button>
+                    <button (click)="deleteCourseByName(course.courseName)">删除课程</button>
                  </div>
             </div>
         </div>
@@ -58,18 +58,18 @@
         <hr>
         <div *ngIf="isAuthenticated()">
             <div>
-            <span>课程名称</span><input>
+            <span>课程名称</span><input type="text" [(ngModel)]="courseName">
             </div>
             <div>
-                <span>课程地点</span><input>
+                <span>课程地点</span><input type="text" [(ngModel)]="courseLocation">
             </div>
             <div>
-                <span>课程内容</span><input>
+                <span>课程内容</span><input type="text" [(ngModel)]="courseContent">
             </div>
             <div>
-                <span>课程老师</span><input>
+                <span>课程老师</span><input type="number" [(ngModel)]="courseTeacher">
             </div>
-            <button> 创建 </button>
+            <button (click)="addCourse()"> 创建 </button>
         </div>
 
         <!--<div *ngIf="isAuthenticated()">-->

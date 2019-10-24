@@ -1,6 +1,6 @@
 export interface CourseDto {
-    courseName: string;
-    courseLocation: string;
-    courseContent: string;
-    courseTeacher: string;
+    courseName: String;
+    courseLocation: String;
+    courseContent: String;
+    courseTeacher: number;
 }

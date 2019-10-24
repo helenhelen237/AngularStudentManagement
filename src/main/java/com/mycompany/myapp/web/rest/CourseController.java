@@ -3,6 +3,7 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.domain.Course;
 import com.mycompany.myapp.domain.dto.CourseDto;
 import com.mycompany.myapp.domain.dto.CourseWithTNDto;
+import com.mycompany.myapp.domain.UserCourse;
 import com.mycompany.myapp.service.CourseService;
 import io.swagger.annotations.Api;
 import org.hibernate.validator.constraints.NotBlank;
@@ -30,6 +31,14 @@ public class CourseController {
         return new ResponseEntity<>(allCourses, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/api/course/findAllCoursesLengthLargerThan10", produces = "application/json")
+    public HttpEntity<List<CourseDto>> findAllCoursesLengthLargerThan10(){
+
+        List<CourseDto> allCourses = courseService.findAllCoursesLengthLargerThan10();
+
+        return new ResponseEntity<>(allCourses, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/api/course/findAllCoursesDto", produces = "application/json")
     public HttpEntity<List<CourseDto>> findAllCoursesDto(){
         List<CourseDto> allCourses = courseService.findAllCoursesDtoFromDB();
@@ -44,8 +53,8 @@ public class CourseController {
         return new ResponseEntity<>(allCourses, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/api/course/registerCourse/{courseName}", produces = "application/json")
-    public HttpStatus registerCourse(@PathVariable String courseName) {
+    @PostMapping(path = "/api/course/registerCourse", produces = "application/json")
+    public HttpStatus registerCourse(@RequestBody @NotNull String courseName) {
         try {
             courseService.registerCourse(courseName);
             return HttpStatus.OK;
@@ -74,17 +83,7 @@ public class CourseController {
         }
     }
 
-    @PostMapping(path = "/api/course/createCourse", produces = "application/json")
-    public HttpStatus createCourse(@RequestBody @NotNull CourseDto course) {
-        try {
-            courseService.addCourse(course);
-            return HttpStatus.OK;
-        } catch (Exception e) {
-            return HttpStatus.BAD_REQUEST;
-        }
-    }
-
-    @DeleteMapping(path = "/api/course/deleteCourse/{courseName}", produces = "application/js")
+    @DeleteMapping(path = "/api/course/deleteCourse/{courseName}", produces = "application/json")
     public HttpStatus deleteCourse(@NotNull @PathVariable("courseName") String courseName) {
         try {
             courseService.deleteCourse(courseName);
@@ -94,13 +93,13 @@ public class CourseController {
         }
     }
 
-    @PostMapping(path = "/api/course/addCourseToStudent/{courseName}", produces = "application/js")
-    public HttpStatus addCourseToStudent(@NotNull @PathVariable("courseName") UserCourse userCourse) {
-        try {
-            courseService.addCourseToStudent(userCourse);
-            return HttpStatus.OK;
-        } catch (Exception e) {
-            return HttpStatus.BAD_REQUEST;
-        }
-    }
+//    @PostMapping(path = "/api/course/addCourseToStudent", produces = "application/json")
+//    public HttpStatus addCourseToStudent(@RequestBody @NotNull String userCourse) {
+//        try {
+//            courseService.addCourseToStudent(userCourse);
+//            return HttpStatus.OK;
+//        } catch (Exception e) {
+//            return HttpStatus.BAD_REQUEST;
+//        }
+//    }
 }

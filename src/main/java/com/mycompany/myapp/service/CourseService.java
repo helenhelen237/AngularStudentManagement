@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -33,19 +34,36 @@ public class CourseService {
     List<CourseDto> courseDtos = new ArrayList<>();
 
     public List<CourseDto> findAllCourses() {
+        //cache strategy => LRU, LFU 满了踢谁 TTL = time to leave
+//        if (!courseDtos.isEmpty()) {
+//            return courseDtos;
+//        }
 
-        //Cache
-        if (courseDtos.isEmpty()) {
-            List<Course> courses = courseRepository.findAll();
+        List<Course> courses = courseRepository.findAll();
+        return courses
+            .stream()
+            .map(c -> new CourseDto(c.getCourseName(), c.getCourseLocation(), c.getCourseContent(), c.getTeacherId()))
+            .collect(Collectors.toList());
+    }
 
-            for (Course c : courses) {
-                courseDtos.add(new CourseDto(c.getCourseName(), c.getCourseLocation(), c.getCourseContent(), c.getTeacherId()));
-            }
+    public List<CourseDto> findAllCoursesLengthLargerThan10() {
+        List<CourseDto> allCourses = findAllCourses();
 
-            return courseDtos;
-        }
-
-        return courseDtos;
+        return allCourses
+            .stream()
+            .filter(courseDto -> courseDto.getCourseName().length() > 10)
+            .collect(Collectors.toList());
+//        List<CourseDto> result = new ArrayList<>();
+//
+//        List<Course> courses = courseRepository.findAll();
+//
+//        for (Course c : courses) {
+//            if (c.getCourseName().length() > 10) {
+//                result.add(new CourseDto(c.getCourseName(), c.getCourseLocation(), c.getCourseContent(), c.getTeacherId()));
+//            }
+//        }
+//
+//        return result;
     }
 
     public List<CourseDto> findAllCoursesDtoFromDB(){
@@ -81,8 +99,8 @@ public class CourseService {
         Course courseBeingSaved = Course.builder()
             .courseName(course.getCourseName())
             .courseContent(course.getCourseContent())
-            .courseLocation(course.getCourseContent())
-            .teacherId(course.getTeacherId())
+            .courseLocation(course.getCourseLocation())
+            .teacherId(course.getCourseTeacher())
             .build();
 
         try {
@@ -95,11 +113,9 @@ public class CourseService {
 
     public void deleteCourse(String courseName) throws Exception{
         Optional<Course> OptionalExistingCourse = courseRepository.findCourseByCourseName(courseName);
-
         if(!OptionalExistingCourse.isPresent()){
             throw new Exception("Course is not exist.");
         }
-
         try {
             courseRepository.delete(OptionalExistingCourse.get());
         } catch (Exception e){
@@ -119,25 +135,25 @@ public class CourseService {
         existingCourse.setCourseContent(course.getCourseContent());
         existingCourse.setCourseLocation(course.getCourseLocation());
         existingCourse.setCourseName(course.getCourseName());
-        existingCourse.setTeacherId(course.getTeacherId());
+        existingCourse.setTeacherId(course.getCourseTeacher());
 
     }
 
-    public void addCourseToStudent(UserCourse userCourse) throws Exception {
-
-        Optional<User> curUser = userService.getUserWithAuthorities();
-        // 2 find course from course table
-
-
-        UserCourse t1 =  UserCourse.builder()
-            .course(c1)
-            .user(curUser)
-            .build();
-
-        try {
-            UserCourseRepository.saveAndFlush(t1);
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-    }
+//    public void addCourseToStudent(String userCourse) throws Exception {
+//
+//        Optional<User> curUser = userService.getUserWithAuthorities();
+//        // 2 find course from course table
+//
+//
+//        UserCourse t1 =  UserCourse.builder()
+//            .course(c1)
+//            .user(curUser)
+//            .build();
+//
+//        try {
+//            UserCourseRepository.saveAndFlush(t1);
+//        } catch (Exception e){
+//            throw new Exception(e.getMessage());
+//        }
+//    }
 }
